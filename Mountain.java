@@ -1,15 +1,14 @@
 package jpa.entity.coursework4;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
+// 3. Getting a list of Mountains by country's name
 @NamedQueries({
-       @NamedQuery(name = "Mountain.getMountainByCountryName",
-       query = "SELECT a FROM Mountain a WHERE a.country = :country"),
+        @NamedQuery(name = "Mountain.getMountainByCountryName",
+                query = "SELECT a FROM Mountain a WHERE a.country = :country"),
 })
-public class Mountain extends AutoPrimaryKey{
-    //   @Id
+public class Mountain extends AutoPrimaryKey {
     @Column(nullable = false, length = 30)
     private String name;
 
@@ -18,13 +17,6 @@ public class Mountain extends AutoPrimaryKey{
 
     @Column(nullable = false, length = 5)
     private int height;
-
-//    @ManyToMany(fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
-//    @JoinTable(name = "Mountain_Group",
-//    joinColumns = @JoinColumn(name = "mountain_name"),
-//    inverseJoinColumns = @JoinColumn(name = "group"))
-//    List<GroupForClimbing> group;
-
 
     public Mountain(String name, String country, int height) {
         setName(name);
@@ -51,7 +43,7 @@ public class Mountain extends AutoPrimaryKey{
 
     public void setCountry(String country) {
         if (country == null || country.length() < 4)
-            throw new IllegalArgumentException("name должен быть не меньше 4");
+            throw new IllegalArgumentException("country должен быть не меньше 4");
         this.country = country;
     }
 
@@ -64,5 +56,4 @@ public class Mountain extends AutoPrimaryKey{
             throw new IllegalArgumentException("height не должен быть меньше 100");
         this.height = height;
     }
-
 }

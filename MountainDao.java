@@ -1,7 +1,5 @@
 package jpa.entity.coursework4;
 
-import jpa.entity.coursework4.Dao;
-import jpa.entity.coursework4.Mountain;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -21,7 +19,6 @@ public class MountainDao implements Dao<Mountain, Integer> {
     @Override
     public void update(Mountain mountain) {
         manager.merge(mountain);
-
     }
 
     @Override
@@ -40,15 +37,13 @@ public class MountainDao implements Dao<Mountain, Integer> {
         if (mountain != null)
             delete(mountain);
         else System.out.println("Такой горы не существует");
-
     }
 
-    public List<Mountain> getMountainByCountry (String country) {
-        TypedQuery <Mountain> query = manager.createNamedQuery("Mountain.getMountainByCountryName",
+    public List<Mountain> getMountainByCountry(String country) {
+        TypedQuery<Mountain> query = manager.createNamedQuery("Mountain.getMountainByCountryName",
                 Mountain.class);
         query.setParameter("country", country);
-        List <Mountain> mountains = query.getResultList();
+        List<Mountain> mountains = query.getResultList();
         return mountains;
     }
-
 }

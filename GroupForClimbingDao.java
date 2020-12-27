@@ -1,7 +1,5 @@
 package jpa.entity.coursework4;
 
-import jpa.entity.coursework4.Dao;
-import jpa.entity.coursework4.GroupForClimbing;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;

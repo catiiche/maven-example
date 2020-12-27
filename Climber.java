@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+// 1. Getting all members aged [from; to)
 @NamedQueries({
         @NamedQuery(name = "Climber.getByAge",
-        query = "SELECT a FROM Climber a WHERE a.age >= :from and a.age < :to"),
+                query = "SELECT a FROM Climber a WHERE a.age >= :from and a.age < :to"),
 })
-public class Climber extends AutoPrimaryKey{
+public class Climber extends AutoPrimaryKey {
 
     @Column(nullable = false, length = 20)
     private String name;
@@ -20,10 +21,8 @@ public class Climber extends AutoPrimaryKey{
     @Column(nullable = false, length = 3)
     private int age;
 
-    @ManyToMany (fetch = FetchType.LAZY, mappedBy = "groupOfClimbers")
- //   @JoinColumn(name = "groupOfClimbers")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "groupOfClimbers")
     List<GroupForClimbing> group = new ArrayList<>();
-
 
     public Climber(String name, String address, int age) {
         setName(name);
@@ -64,11 +63,11 @@ public class Climber extends AutoPrimaryKey{
         this.age = age;
     }
 
-    public List<GroupForClimbing>  getGroup() {
+    public List<GroupForClimbing> getGroup() {
         return group;
     }
 
-    public void setGroup(List<GroupForClimbing>  group) {
+    public void setGroup(List<GroupForClimbing> group) {
         this.group = group;
     }
 }
