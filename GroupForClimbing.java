@@ -1,26 +1,34 @@
 package jpa.entity.coursework4;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.util.List;
-import java.util.Objects;
 
 @Entity
-public class GroupForClimbing {
+@NamedQueries({
+        @NamedQuery(name = "GroupForClimbing.getByMountain",
+        query = "SELECT a FROM GroupForClimbing a JOIN FETCH a.mountain s WHERE s.name = :name"),
 
-    @EmbeddedId
-    private GroupForClimbingKey key;
+        @NamedQuery(name = "GroupForClimbing.getOpen",
+        query = "SELECT a FROM GroupForClimbing a WHERE a.isGroupRecruitment = :condition"),
+})
+public class GroupForClimbing extends AutoPrimaryKey{
 
+    @JoinColumn(nullable = false)
     private boolean isGroupRecruitment;
 
-//    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
-//    private List<Climber> groupOfClimbers;
-//
-//    @ManyToMany(mappedBy = "group")
-//    private List <Mountain> mountain;
+    @ManyToMany
+    @JoinTable(name = "climbers_group",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "climber_id"))
+    private List<Climber> groupOfClimbers = new ArrayList<>();
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Mountain mountain;
 
     @Column(nullable = false)
     LocalDateTime climbingData;
@@ -28,15 +36,50 @@ public class GroupForClimbing {
     @Column(nullable = false)
     LocalDateTime duration;
 
-    public GroupForClimbing(boolean isGroupRecruitment, List <Mountain> mountain, List<Climber> groupOfClimbers) {
+
+    public GroupForClimbing(boolean isGroupRecruitment, Mountain mountain, LocalDateTime climbingData
+            , LocalDateTime duration, List<Climber> groupOfClimbers) {
         setMountain(mountain);
-        setClimbers(groupOfClimbers);
         setGroupRecruitment(isGroupRecruitment);
+        setClimbingData(climbingData);
+        setDuration(duration);
+        setGroupOfClimbers(groupOfClimbers);
     }
 
     public GroupForClimbing() {
     }
 
+    public List<Climber> getGroupOfClimbers() {
+        return groupOfClimbers;
+    }
+
+    public void setGroupOfClimbers(List<Climber> groupOfClimbers) {
+        this.groupOfClimbers = groupOfClimbers;
+    }
+
+    public Mountain getMountain() {
+        return mountain;
+    }
+
+    public void setMountain(Mountain mountain) {
+        this.mountain = mountain;
+    }
+
+    public LocalDateTime getClimbingData() {
+        return climbingData;
+    }
+
+    public void setClimbingData(LocalDateTime climbingData) {
+        this.climbingData = climbingData;
+    }
+
+    public LocalDateTime getDuration() {
+        return duration;
+    }
+
+    public void setDuration(LocalDateTime duration) {
+        this.duration = duration;
+    }
     public boolean isGroupRecruitment() {
         return isGroupRecruitment;
     }
@@ -45,76 +88,9 @@ public class GroupForClimbing {
         isGroupRecruitment = groupRecruitment;
     }
 
-    public List<Climber> getClimbers() {
-        return groupOfClimbers;
-    }
-
-    public void setClimbers(List<Climber> groupOfClimbers) {
-        if (groupOfClimbers == null)
-            throw new IllegalArgumentException("groupOfClimbers не должен быть равен null");
-        this.groupOfClimbers = groupOfClimbers;
-    }
-
-    public List <Mountain> getMountain() {
-        return mountain;
-    }
-
-    public void setMountain(List <Mountain> mountain) {
-        if (mountain == null)
-            throw new IllegalArgumentException("mountain не должен быть равен null");
-        this.mountain = mountain;
-    }
-
-    public void addClimbers(Climber climber) {
+    public void addClimber(Climber climber){
         groupOfClimbers.add(climber);
     }
 
-    @Embeddable // для составного первичного ключа
-    public static class GroupForClimbingKey implements Serializable {
-        final static long serialVersionUID = 1L;
 
-        @Column(length = 20)
-        private Climber climber;
-
-        @Column(length = 30)
-        private Mountain mountain;
-
-        public GroupForClimbingKey(){
-
-        }
-
-        public Mountain getMountain() {
-            return mountain;
-        }
-
-        public void setMountain(Mountain mountain) {
-            if (mountain == null)
-                throw new IllegalArgumentException("mountain не должен быть равен null");
-            this.mountain = mountain;
-        }
-
-        public Climber getClimber() {
-            return climber;
-        }
-
-        public void setClimber(Climber climber) {
-            if (climber == null)
-                throw new IllegalArgumentException("climber не должен быть равен null");
-            this.climber = climber;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            GroupForClimbingKey key = (GroupForClimbingKey) o;
-            return Objects.equals(climber, key.climber) &&
-                    Objects.equals(mountain, key.mountain);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(climber, mountain);
-        }
-    }
 }

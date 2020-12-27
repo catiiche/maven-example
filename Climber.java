@@ -1,15 +1,16 @@
 package jpa.entity.coursework4;
 
-import jpa.entity.Group;
-
 import javax.persistence.*;
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Climber {
+@NamedQueries({
+        @NamedQuery(name = "Climber.getByAge",
+        query = "SELECT a FROM Climber a WHERE a.age >= :from and a.age < :to"),
+})
+public class Climber extends AutoPrimaryKey{
 
-    @Id
     @Column(nullable = false, length = 20)
     private String name;
 
@@ -19,9 +20,9 @@ public class Climber {
     @Column(nullable = false, length = 3)
     private int age;
 
-    @ManyToOne (optional = false, cascade = CascadeType.ALL)
-    @JoinColumn(name = "groupOfClimbers")
-    GroupForClimbing group;
+    @ManyToMany (fetch = FetchType.LAZY, mappedBy = "groupOfClimbers")
+ //   @JoinColumn(name = "groupOfClimbers")
+    List<GroupForClimbing> group = new ArrayList<>();
 
 
     public Climber(String name, String address, int age) {
@@ -58,16 +59,16 @@ public class Climber {
     }
 
     public void setAge(int age) {
-        if (age <= 18)
+        if (age < 18)
             throw new IllegalArgumentException("age должен быть больше 18");
         this.age = age;
     }
 
-    public GroupForClimbing getGroup() {
+    public List<GroupForClimbing>  getGroup() {
         return group;
     }
 
-    public void setGroup(GroupForClimbing group) {
+    public void setGroup(List<GroupForClimbing>  group) {
         this.group = group;
     }
 }

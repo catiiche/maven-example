@@ -4,8 +4,12 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Mountain {
-    @Id
+@NamedQueries({
+       @NamedQuery(name = "Mountain.getMountainByCountryName",
+       query = "SELECT a FROM Mountain a WHERE a.country = :country"),
+})
+public class Mountain extends AutoPrimaryKey{
+    //   @Id
     @Column(nullable = false, length = 30)
     private String name;
 
@@ -15,11 +19,11 @@ public class Mountain {
     @Column(nullable = false, length = 5)
     private int height;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
-    @JoinTable(name = "Mountain_Group",
-    joinColumns = @JoinColumn(name = "mountain_name"),
-    inverseJoinColumns = @JoinColumn(name = "group"))
-    List<GroupForClimbing> group;
+//    @ManyToMany(fetch = FetchType.LAZY, cascade =  CascadeType.ALL)
+//    @JoinTable(name = "Mountain_Group",
+//    joinColumns = @JoinColumn(name = "mountain_name"),
+//    inverseJoinColumns = @JoinColumn(name = "group"))
+//    List<GroupForClimbing> group;
 
 
     public Mountain(String name, String country, int height) {
@@ -61,11 +65,4 @@ public class Mountain {
         this.height = height;
     }
 
-    public List<GroupForClimbing> getGroup() {
-        return group;
-    }
-
-    public void setGroup(List<GroupForClimbing> group) {
-        this.group = group;
-    }
 }
